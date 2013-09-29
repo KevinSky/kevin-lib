@@ -73,7 +73,7 @@
 	<modules>
 		<module>lib-performance</module>
 		<module>lib-redis</module>
-		<module>lib-thrift</module>
+		<module>lib-pool</module>
 		<module>lib-util</module>
 		<module>lib-test</module>
 	</modules>
