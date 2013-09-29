@@ -8,16 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-public class GenericConnectionProvider implements InitializingBean,
+public class GenericConnectionPool implements InitializingBean,
 		DisposableBean {
 	private static final Logger logger = LoggerFactory
-			.getLogger(GenericConnectionProvider.class);
-	/** 服务的IP地址 */
-	private String serviceIP;
-	/** 服务的端口 */
-	private int servicePort;
-	/** 连接超时配置 */
-	private int conTimeOut;
+			.getLogger(GenericConnectionPool.class);
 	/** 可以从缓存池中分配对象的最大数量 */
 	private int maxActive = GenericObjectPool.DEFAULT_MAX_ACTIVE;
 	/** 缓存池中最大空闲对象数量 */
@@ -66,30 +60,6 @@ public class GenericConnectionProvider implements InitializingBean,
 		} catch (Exception e) {
 			throw new RuntimeException("erorr destroy()", e);
 		}
-	}
-
-	public String getServiceIP() {
-		return serviceIP;
-	}
-
-	public void setServiceIP(String serviceIP) {
-		this.serviceIP = serviceIP;
-	}
-
-	public int getServicePort() {
-		return servicePort;
-	}
-
-	public void setServicePort(int servicePort) {
-		this.servicePort = servicePort;
-	}
-
-	public int getConTimeOut() {
-		return conTimeOut;
-	}
-
-	public void setConTimeOut(int conTimeOut) {
-		this.conTimeOut = conTimeOut;
 	}
 
 	public int getMaxActive() {

@@ -5,7 +5,7 @@ import kevin.lib.pool.exception.GetConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CommonPool<T> extends GenericConnectionProvider implements
+public class CommonPool<T> extends GenericConnectionPool implements
 		ConnectionProvider<T> {
 	private static final Logger log = LoggerFactory.getLogger(CommonPool.class);
 

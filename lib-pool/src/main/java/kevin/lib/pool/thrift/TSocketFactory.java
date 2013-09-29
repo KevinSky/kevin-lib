@@ -1,109 +1,59 @@
 package kevin.lib.pool.thrift;
 
-import org.apache.commons.pool.PoolableObjectFactory;
+import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
+import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TSocketFactory implements PoolableObjectFactory {
-	/** 日志记录器 */
-	public static final Logger logger = LoggerFactory
-			.getLogger(TSocketFactory.class);
-	/** 服务的IP */
-	private String serviceIP;
-	/** 服务的端口 */
-	private int servicePort;
-	/** 超时设置 */
-	private int timeOut;
+public class TSocketFactory extends BasePoolableObjectFactory {
+    /** 日志记录器 */
+    public static final Logger log = LoggerFactory.getLogger(TSocketFactory.class);
+    private TSocketConfig config;
+    private ObjectValidator<TTransport> objValidator;
 
-	/**
-	 * 
-	 * @param serviceIP
-	 * @param servicePort
-	 * @param timeOut
-	 */
-	public TSocketFactory(String serviceIP, int servicePort, int timeOut) {
-		this.serviceIP = serviceIP;
-		this.servicePort = servicePort;
-		this.timeOut = timeOut;
-	}
+    public TSocketFactory(TSocketConfig config, ObjectValidator<TTransport> objValidator) {
+        this.config = config;
+        this.objValidator = objValidator;
+    }
 
-	@Override
-	public void destroyObject(Object arg0) throws Exception {
-		if (arg0 instanceof TSocket) {
-			TSocket socket = (TSocket) arg0;
-			if (socket.isOpen()) {
-				socket.close();
-			}
-		}
-	}
+    public TSocketFactory(TSocketConfig config) {
+        this.config = config;
+    }
 
-	/**
+    @Override
+    public void destroyObject(Object obj) throws Exception {
+        TSocket tsocket = (TSocket) obj;
+        tsocket.close();
+        log.debug("TSocket closed, [" + config.getHost() + ":" + config.getPort() + "] ");
+    }
+
+    /**
      * 
      */
-	@Override
-	public Object makeObject() throws Exception {
-		try {
-			TTransport transport = new TSocket(this.serviceIP,
-					this.servicePort, this.timeOut);
-			transport.open();
-			return transport;
-		} catch (Exception e) {
-			logger.error("error ThriftPoolableObjectFactory()", e);
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public Object makeObject() throws Exception {
+        TSocket tsocket = config.getSoTimeout() > 0 ? new TSocket(config.getHost(), config.getPort(),
+                config.getSoTimeout()) : new TSocket(config.getHost(), config.getPort());
 
-	@Override
-	public boolean validateObject(Object arg0) {
-		try {
-			if (arg0 instanceof TSocket) {
-				TSocket thriftSocket = (TSocket) arg0;
-				if (thriftSocket.isOpen()) {
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		} catch (Exception e) {
-			return false;
-		}
-	}
+        try {
+            tsocket.open();
+        } catch (TTransportException e) {
+            log.error("error creating TSocket to:" + config.getHost() + ":" + config.getPort(), e);
+            throw e;
+        }
 
-	@Override
-	public void passivateObject(Object arg0) throws Exception {
-		// DO NOTHING
-	}
+        log.debug("TSocket created, [" + config.getHost() + ":" + config.getPort() + "]");
+        return tsocket;
+    }
 
-	@Override
-	public void activateObject(Object arg0) throws Exception {
-		// DO NOTHING
-	}
-
-	public String getServiceIP() {
-		return serviceIP;
-	}
-
-	public void setServiceIP(String serviceIP) {
-		this.serviceIP = serviceIP;
-	}
-
-	public int getServicePort() {
-		return servicePort;
-	}
-
-	public void setServicePort(int servicePort) {
-		this.servicePort = servicePort;
-	}
-
-	public int getTimeOut() {
-		return timeOut;
-	}
-
-	public void setTimeOut(int timeOut) {
-		this.timeOut = timeOut;
-	}
+    @Override
+    public boolean validateObject(Object obj) {
+        if (objValidator != null) {
+            return objValidator.isValid((TSocket) obj);
+        } else {
+            return true;
+        }
+    }
 }
