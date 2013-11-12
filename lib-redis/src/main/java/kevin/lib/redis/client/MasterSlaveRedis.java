@@ -44,6 +44,10 @@ public class MasterSlaveRedis implements JedisCommands{
 				masterConfig.getPassword(), masterConfig.getDatabase());
 		forceReadFromMaster = true;
 	}
+	
+	public JedisPool getMasterPool() {
+        return masterPool;
+    }
 
 	public MasterSlaveRedis(RedisPoolConfig masterConfig,
 			RedisPoolConfig slaveConfig) {

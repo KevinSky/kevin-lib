@@ -15,5 +15,13 @@ public class PerformFailure extends Exception{
 	public PerformFailure(String msg){
 		super(msg);
 	}
+	
+	public PerformFailure(Exception e){
+        super(e);
+    }
+	
+	public PerformFailure(String msg, Exception e){
+        super(msg, e);
+    }
 
 }

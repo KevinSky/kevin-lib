@@ -58,6 +58,10 @@ public class MasterSlavesRedis implements JedisCommands{
 
 		slavePools.add(slave);
 	}
+	
+	public JedisPool getMasterPool() {
+	    return masterPool;
+	}
 
 	public MasterSlavesRedis(RedisPoolConfig masterConfig,
 			List<RedisPoolConfig> slaveConfigs) {

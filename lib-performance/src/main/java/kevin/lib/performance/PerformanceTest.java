@@ -112,11 +112,12 @@ public class PerformanceTest implements PerformPool{
 		for(Map<String,Object> r : result) {
 			str += genOneResult(r) + "\r\n";
 		}
-		str += "here is the total data\r\nrequest:"+n+" concurrent:"+c+" totalTime:"+(totalTime/1000)+"s("+totalTime+"ms)\tTPS:"+(1000*n/totalTime)+"\r\n";
-		str += "total success:\tcount:" + totalSCount + "\ttime:" +(totalSTime/1000) + "s("+(totalSTime)+"ms)\t";
-		if(totalSCount!=0)
-			str += "\taverage:" + totalSTime/totalSCount+"ms";
-		str += "\r\n";
+        str += "here is the total data\r\nrequest:" + n + " concurrent:" + c + " totalTime:" + (totalTime / 1000)
+                + "s(" + totalTime + "ms)\tTPS:" + (1000 * totalSCount / totalTime) + "\r\n";
+        str += "total success:\tcount:" + totalSCount + "\ttime:" + (totalSTime / 1000) + "s(" + (totalSTime) + "ms)\t";
+        if (totalSCount != 0)
+            str += "\taverage:" + totalSTime / totalSCount + "ms";
+        str += "\r\n";
 		
 		str += "total failure:\tcount:" + totalFCount + "\ttime:" +(totalFTime/1000) + "s("+(totalFTime)+"ms)\t";
 		if(totalFCount!=0)
