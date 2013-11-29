@@ -88,6 +88,7 @@
 		<module>lib-pool</module>
 		<module>lib-util</module>
 		<module>lib-test</module>
+		<module>lib-mybatis-generator</module>
 	</modules>
 	<build>
 		<plugins>

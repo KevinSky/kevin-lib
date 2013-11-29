@@ -28,4 +28,16 @@ public class JsonUtil {
     public static String toJson(Object obj) {
         return JSON.toJSONString(obj);
     }
+    
+    public static void main(String[] args) {
+        String t = "中";
+        byte[] b = t.getBytes();
+        for(int i=0; i<b.length; i++) {
+            for(int j=0; j<8; j++) {
+                System.out.print((b[i]>>i)&1);
+            }
+        }
+        byte[] zhong = {(byte)0xff,(byte)0x00,(byte)0x00};
+        System.out.println(new String(zhong));
+    }
 }
